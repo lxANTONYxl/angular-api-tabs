@@ -1,0 +1,187 @@
+<div class="tabs-container">
+
+  <div class="tabs-header">
+    <h1 class="tabs-title">TABS</h1>
+  </div>
+
+  <div class="tabs-navigation">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item" *ngFor="let tab of tabs" role="presentation">
+        <button 
+          class="nav-link" 
+          [class.active]="tab.active"
+          (click)="selectTab(tab.id)"
+          type="button"
+          role="tab">
+          {{ tab.label }}
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="tab-content">
+    
+    <div *ngIf="activeTabId === 'api1'" class="tab-pane active">
+      <div class="container-fluid p-4">
+        <h3 class="mb-4">api1</h3>
+        <div class="alert alert-info" *ngIf="loading">
+          Cargando datos...
+        </div>
+        <div class="table-responsive" *ngIf="!loading">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="dashboardData.length === 0">
+                <td colspan="4" class="text-center text-muted">
+                  No hay datos disponibles
+                </td>
+              </tr>
+              <tr *ngFor="let item of dashboardData; let i = index">
+                <td>{{ item.id }}</td>
+                <td>{{ item.title }}</td>
+                <td>{{ item.body | slice:0:50 }}...</td>
+                <td>
+                  <button class="btn btn-sm btn-outline-primary">Ver</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTabId === 'api2'" class="tab-pane active">
+      <div class="container-fluid p-4">
+        <h3 class="mb-4">Posts</h3>
+        <div class="alert alert-info" *ngIf="loading">
+          Cargando posts...
+        </div>
+        <div class="row" *ngIf="!loading">
+          <div class="col-md-6 mb-3" *ngFor="let post of postsData">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">{{ post.title }}</h5>
+                <p class="card-text">{{ post.body }}</p>
+                <small class="text-muted">User ID: {{ post.userId }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTabId === 'api3'" class="tab-pane active">
+      <div class="container-fluid p-4">
+        <h3 class="mb-4">Videos/Photos</h3>
+        <div class="alert alert-info" *ngIf="loading">
+          Cargando videos...
+        </div>
+        <div class="row" *ngIf="!loading">
+          <div class="col-md-3 mb-3" *ngFor="let video of videosData">
+            <div class="card">
+              <img [src]="video.thumbnailUrl" class="card-img-top" [alt]="video.title">
+              <div class="card-body">
+                <p class="card-text small">{{ video.title | slice:0:30 }}...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTabId === 'api4'" class="tab-pane active">
+      <div class="container-fluid p-4">
+        <h3 class="mb-4">Contacts</h3>
+        <div class="alert alert-info" *ngIf="loading">
+          Cargando contactos...
+        </div>
+        <div class="list-group" *ngIf="!loading">
+          <div class="list-group-item" *ngFor="let contact of contactsData">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{ contact.name }}</h5>
+              <small>{{ contact.email }}</small>
+            </div>
+            <p class="mb-1">{{ contact.body }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTabId === 'api5'" class="tab-pane active">
+      <div class="container-fluid p-4">
+        <h3 class="mb-4">Weather</h3>
+        <div class="alert alert-warning">
+          Implementar API de clima aquí
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTabId === 'api6'" class="tab-pane active">
+      <div class="container-fluid p-4">
+        <h3 class="mb-4">News</h3>
+        <div class="alert alert-warning">
+          Implementar API de noticias aquí
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTabId === 'api7'" class="tab-pane active">
+      <div class="container-fluid p-4">
+        <h3 class="mb-4">Users</h3>
+        <div class="alert alert-info" *ngIf="loading">
+          Cargando usuarios...
+        </div>
+        <div class="table-responsive" *ngIf="!loading">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Ciudad</th>
+                <th>Empresa</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of usersData">
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.address?.city }}</td>
+                <td>{{ user.company?.name }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTabId === 'api8'" class="tab-pane active">
+      <div class="container-fluid p-4">
+        <h3 class="mb-4">Products/Albums</h3>
+        <div class="alert alert-info" *ngIf="loading">
+          Cargando productos...
+        </div>
+        <div class="row" *ngIf="!loading">
+          <div class="col-md-4 mb-3" *ngFor="let product of productsData">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">{{ product.title }}</h5>
+                <p class="text-muted">Album ID: {{ product.id }}</p>
+                <p class="text-muted">User ID: {{ product.userId }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
