@@ -1,10 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 interface Tab {
   id: string;
   label: string;
   active: boolean;
+}
+
+interface DogResponse {
+  message: string;
+  status: string;
 }
 
 @Component({
@@ -15,8 +21,10 @@ interface Tab {
   styleUrls: ['./tabs.css']
 })
 export class TabsComponent implements OnInit {
+  constructor(private http: HttpClient) {}
+
   tabs: Tab[] = [
-    { id: 'api1', label: 'api1', active: true },
+    { id: 'api1', label: 'Perros', active: true },
     { id: 'api2', label: 'api2', active: false },
     { id: 'api3', label: 'api3', active: false },
     { id: 'api4', label: 'api4', active: false },
@@ -28,7 +36,9 @@ export class TabsComponent implements OnInit {
 
   activeTabId: string = 'api1';
   loading: boolean = false;
-  dashboardData: any[] = [];
+
+  // DATASETS
+  dashboardData: DogResponse[] = []; // para api1
   postsData: any[] = [];
   videosData: any[] = [];
   contactsData: any[] = [];
@@ -73,35 +83,27 @@ export class TabsComponent implements OnInit {
     }
   }
 
+  // 🔹 API 1: Fotos de perros
   loadDashboardData(): void {
-    console.log('Cargando datos de api1');
+    this.loading = true;
+    this.http.get<DogResponse>('https://dog.ceo/api/breeds/image/random').subscribe({
+      next: (response) => {
+        this.dashboardData = [response]; // guardamos una sola imagen
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar la imagen de perro:', err);
+        this.loading = false;
+      }
+    });
   }
 
-  loadPostsData(): void {
-    console.log('Cargando datos de api2');
-  }
-
-  loadVideosData(): void {
-    console.log('Cargando datos de api3');
-  }
-
-  loadContactsData(): void {
-    console.log('Cargando datos de api4');
-  }
-
-  loadWeatherData(): void {
-    console.log('Cargando datos de api5');
-  }
-
-  loadNewsData(): void {
-    console.log('Cargando datos de api6');
-  }
-
-  loadUsersData(): void {
-    console.log('Cargando datos de api7');
-  }
-
-  loadProductsData(): void {
-    console.log('Cargando datos de api8');
-  }
+  // demás apis aún sin implementar
+  loadPostsData(): void { console.log('Cargando datos de api2'); }
+  loadVideosData(): void { console.log('Cargando datos de api3'); }
+  loadContactsData(): void { console.log('Cargando datos de api4'); }
+  loadWeatherData(): void { console.log('Cargando datos de api5'); }
+  loadNewsData(): void { console.log('Cargando datos de api6'); }
+  loadUsersData(): void { console.log('Cargando datos de api7'); }
+  loadProductsData(): void { console.log('Cargando datos de api8'); }
 }

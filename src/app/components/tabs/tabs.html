@@ -7,12 +7,7 @@
   <div class="tabs-navigation">
     <ul class="nav nav-tabs" role="tablist">
       <li class="nav-item" *ngFor="let tab of tabs" role="presentation">
-        <button 
-          class="nav-link" 
-          [class.active]="tab.active"
-          (click)="selectTab(tab.id)"
-          type="button"
-          role="tab">
+        <button class="nav-link" [class.active]="tab.active" (click)="selectTab(tab.id)" type="button" role="tab">
           {{ tab.label }}
         </button>
       </li>
@@ -20,39 +15,22 @@
   </div>
 
   <div class="tab-content">
-    
+
     <div *ngIf="activeTabId === 'api1'" class="tab-pane active">
-      <div class="container-fluid p-4">
-        <h3 class="mb-4">api1</h3>
+      <div class="container-fluid p-4 text-center">
+        <h3 class="mb-4">Fotos aleatorias de perros</h3>
+
         <div class="alert alert-info" *ngIf="loading">
-          Cargando datos...
+          Cargando imagen...
         </div>
-        <div class="table-responsive" *ngIf="!loading">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Título</th>
-                <th>Descripción</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="dashboardData.length === 0">
-                <td colspan="4" class="text-center text-muted">
-                  No hay datos disponibles
-                </td>
-              </tr>
-              <tr *ngFor="let item of dashboardData; let i = index">
-                <td>{{ item.id }}</td>
-                <td>{{ item.title }}</td>
-                <td>{{ item.body | slice:0:50 }}...</td>
-                <td>
-                  <button class="btn btn-sm btn-outline-primary">Ver</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+        <div *ngIf="!loading && dashboardData.length > 0">
+          <img [src]="dashboardData[0].message" alt="Foto de perro" class="img-fluid rounded shadow-sm mb-3"
+            style="max-width: 400px; border-radius: 10px;">
+          <br>
+          <button class="btn btn-primary" (click)="loadDashboardData()">
+            Cargar otra imagen
+          </button>
         </div>
       </div>
     </div>
