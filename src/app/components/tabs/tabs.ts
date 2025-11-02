@@ -21,11 +21,11 @@ interface DogResponse {
   styleUrls: ['./tabs.css']
 })
 export class TabsComponent implements OnInit {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   tabs: Tab[] = [
     { id: 'api1', label: 'Perros', active: true },
-    { id: 'api2', label: 'api2', active: false },
+    { id: 'api2', label: 'Juegos', active: false },
     { id: 'api3', label: 'api3', active: false },
     { id: 'api4', label: 'api4', active: false },
     { id: 'api5', label: 'api5', active: false },
@@ -37,8 +37,8 @@ export class TabsComponent implements OnInit {
   activeTabId: string = 'api1';
   loading: boolean = false;
 
-  // DATASETS
-  dashboardData: DogResponse[] = []; // para api1
+
+  dashboardData: DogResponse[] = [];
   postsData: any[] = [];
   videosData: any[] = [];
   contactsData: any[] = [];
@@ -55,7 +55,7 @@ export class TabsComponent implements OnInit {
     this.tabs.forEach(tab => tab.active = tab.id === tabId);
     this.activeTabId = tabId;
 
-    switch(tabId) {
+    switch (tabId) {
       case 'api1':
         this.loadDashboardData();
         break;
@@ -83,12 +83,11 @@ export class TabsComponent implements OnInit {
     }
   }
 
-  // 🔹 API 1: Fotos de perros
   loadDashboardData(): void {
     this.loading = true;
     this.http.get<DogResponse>('https://dog.ceo/api/breeds/image/random').subscribe({
       next: (response) => {
-        this.dashboardData = [response]; // guardamos una sola imagen
+        this.dashboardData = [response];
         this.loading = false;
       },
       error: (err) => {
@@ -98,8 +97,19 @@ export class TabsComponent implements OnInit {
     });
   }
 
-  // demás apis aún sin implementar
-  loadPostsData(): void { console.log('Cargando datos de api2'); }
+  loadPostsData(): void {
+    this.loading = true;
+    this.http.get<any[]>('https://api.thecatapi.com/v1/images/search').subscribe({
+      next: (response) => {
+        this.postsData = response;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar la imagen de gato:', err);
+        this.loading = false;
+      }
+    });
+  }
   loadVideosData(): void { console.log('Cargando datos de api3'); }
   loadContactsData(): void { console.log('Cargando datos de api4'); }
   loadWeatherData(): void { console.log('Cargando datos de api5'); }

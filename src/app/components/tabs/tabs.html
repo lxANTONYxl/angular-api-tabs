@@ -36,21 +36,15 @@
     </div>
 
     <div *ngIf="activeTabId === 'api2'" class="tab-pane active">
-      <div class="container-fluid p-4">
-        <h3 class="mb-4">Posts</h3>
-        <div class="alert alert-info" *ngIf="loading">
-          Cargando posts...
-        </div>
-        <div class="row" *ngIf="!loading">
-          <div class="col-md-6 mb-3" *ngFor="let post of postsData">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">{{ post.title }}</h5>
-                <p class="card-text">{{ post.body }}</p>
-                <small class="text-muted">User ID: {{ post.userId }}</small>
-              </div>
-            </div>
-          </div>
+      <div class="container-fluid text-center p-4">
+        <h3 class="mb-4">Fotos aleatorias de gatos</h3>
+
+        <div class="alert alert-info" *ngIf="loading">Cargando imagen...</div>
+
+        <div *ngIf="!loading && postsData.length > 0">
+          <img [src]="postsData[0].url" class="img-fluid rounded shadow mb-3" style="max-width: 400px;">
+          <br>
+          <button class="btn btn-primary" (click)="loadPostsData()">Cargar otra imagen</button>
         </div>
       </div>
     </div>
