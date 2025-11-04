@@ -13,6 +13,48 @@ interface DogResponse {
   status: string;
 }
 
+export interface RandomUser {
+  name: { first: string; last: string };
+  email: string;
+  location: { city: string; country: string };
+  picture: { thumbnail: string };
+}
+
+export interface Country {
+  name: string;
+  capital: string;
+  region: string;
+  population: number;
+  flag: string;
+}
+
+interface Quote {
+  id: number;
+  quote: string;
+  author: string;
+}
+
+interface Planet {
+  id: string;
+  name: string;
+  description: string;
+  image?: string;
+}
+
+interface FakeNews {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
+
+interface Joke {
+  id: number;
+  type: string;
+  setup: string;
+  punchline: string;
+}
+
 @Component({
   selector: 'app-tabs',
   standalone: true,
@@ -25,27 +67,26 @@ export class TabsComponent implements OnInit {
 
   tabs: Tab[] = [
     { id: 'api1', label: 'Perros', active: true },
-    { id: 'api2', label: 'Juegos', active: false },
-    { id: 'api3', label: 'api3', active: false },
-    { id: 'api4', label: 'api4', active: false },
-    { id: 'api5', label: 'api5', active: false },
-    { id: 'api6', label: 'api6', active: false },
-    { id: 'api7', label: 'api7', active: false },
-    { id: 'api8', label: 'api8', active: false }
+    { id: 'api2', label: 'Gatos', active: false },
+    { id: 'api3', label: 'Paises', active: false },
+    { id: 'api4', label: 'Usuarios', active: false },
+    { id: 'api5', label: 'Frases', active: false },
+    { id: 'api6', label: 'Planetas', active: false },
+    { id: 'api7', label: 'Noticias', active: false },
+    { id: 'api8', label: 'Chistes', active: false }
   ];
 
   activeTabId: string = 'api1';
   loading: boolean = false;
 
-
   dashboardData: DogResponse[] = [];
   postsData: any[] = [];
-  videosData: any[] = [];
-  contactsData: any[] = [];
-  weatherData: any[] = [];
-  newsData: any[] = [];
-  usersData: any[] = [];
-  productsData: any[] = [];
+  videosData: Country[] = [];
+  contactsData: RandomUser[] = [];
+  weatherData: Quote[] = [];
+  newsData: Planet[] = [];
+  usersData: FakeNews[] = [];
+  productsData: Joke[] = [];
 
   ngOnInit(): void {
     this.loadDashboardData();
@@ -56,30 +97,14 @@ export class TabsComponent implements OnInit {
     this.activeTabId = tabId;
 
     switch (tabId) {
-      case 'api1':
-        this.loadDashboardData();
-        break;
-      case 'api2':
-        this.loadPostsData();
-        break;
-      case 'api3':
-        this.loadVideosData();
-        break;
-      case 'api4':
-        this.loadContactsData();
-        break;
-      case 'api5':
-        this.loadWeatherData();
-        break;
-      case 'api6':
-        this.loadNewsData();
-        break;
-      case 'api7':
-        this.loadUsersData();
-        break;
-      case 'api8':
-        this.loadProductsData();
-        break;
+      case 'api1': this.loadDashboardData(); break;
+      case 'api2': this.loadPostsData(); break;
+      case 'api3': this.loadVideosData(); break;
+      case 'api4': this.loadContactsData(); break;
+      case 'api5': this.loadWeatherData(); break;
+      case 'api6': this.loadNewsData(); break;
+      case 'api7': this.loadUsersData(); break;
+      case 'api8': this.loadProductsData(); break;
     }
   }
 
@@ -110,10 +135,121 @@ export class TabsComponent implements OnInit {
       }
     });
   }
-  loadVideosData(): void { console.log('Cargando datos de api3'); }
-  loadContactsData(): void { console.log('Cargando datos de api4'); }
-  loadWeatherData(): void { console.log('Cargando datos de api5'); }
-  loadNewsData(): void { console.log('Cargando datos de api6'); }
-  loadUsersData(): void { console.log('Cargando datos de api7'); }
-  loadProductsData(): void { console.log('Cargando datos de api8'); }
+
+  loadVideosData(): void {
+    this.loading = true;
+    this.http.get<any>('https://countriesnow.space/api/v0.1/countries/flag/images').subscribe({
+      next: (res) => {
+        if (res.data) {
+          this.videosData = res.data.slice(0, 20).map((country: any) => ({
+            name: country.name,
+            capital: 'N/A',
+            region: 'N/A',
+            population: 0,
+            flag: country.flag
+          }));
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar países:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  loadContactsData(): void {
+    this.loading = true;
+    this.http.get<{ results: RandomUser[] }>('https://randomuser.me/api/?results=10').subscribe({
+      next: (res) => {
+        this.contactsData = res.results;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar usuarios:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  async loadWeatherData() {
+    this.loading = true;
+    try {
+      const data = await this.http.get<any>('https://dummyjson.com/quotes/random').toPromise();
+      if (data) {
+        this.weatherData = [{
+          id: data.id,
+          quote: data.quote,
+          author: data.author
+        }];
+      } else {
+        this.weatherData = [];
+      }
+    } catch (error) {
+      console.error('Error al cargar frases:', error);
+      this.weatherData = [];
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async loadNewsData() {
+    this.loading = true;
+    try {
+      const data: any = await this.http.get('https://api.spacexdata.com/v4/launches/latest').toPromise();
+      if (data) {
+        this.newsData = [
+          { id: '1', name: 'Mercurio', description: 'El planeta más cercano al Sol', image: '' },
+          { id: '2', name: 'Venus', description: 'El planeta más caliente del sistema solar', image: '' },
+          { id: '3', name: 'Tierra', description: 'Nuestro hogar', image: '' },
+          { id: '4', name: 'Marte', description: 'El planeta rojo', image: '' },
+          { id: '5', name: 'Júpiter', description: 'El planeta más grande', image: '' },
+          { id: '6', name: 'Saturno', description: 'El planeta de los anillos', image: '' },
+          { id: '7', name: 'Urano', description: 'El gigante de hielo', image: '' },
+          { id: '8', name: 'Neptuno', description: 'El planeta más lejano', image: '' }
+        ];
+      } else {
+        this.newsData = [];
+      }
+    } catch (error) {
+      console.error('Error al cargar planetas:', error);
+      this.newsData = [];
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async loadUsersData(): Promise<void> {
+    this.loading = true;
+    try {
+      const data = await this.http.get<FakeNews[]>('https://jsonplaceholder.typicode.com/posts').toPromise();
+      if (data) {
+        this.usersData = data.slice(0, 10);
+      } else {
+        this.usersData = [];
+      }
+    } catch (error) {
+      console.error('Error al cargar fake news:', error);
+      this.usersData = [];
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async loadProductsData(): Promise<void> {
+    this.loading = true;
+    try {
+      const data = await this.http.get<Joke[]>('https://official-joke-api.appspot.com/random_ten').toPromise();
+      if (data) {
+        this.productsData = data;
+      } else {
+        this.productsData = [];
+      }
+    } catch (error) {
+      console.error('Error al cargar chistes:', error);
+      this.productsData = [];
+    } finally {
+      this.loading = false;
+    }
+  }
 }

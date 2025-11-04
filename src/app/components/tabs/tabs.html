@@ -1,5 +1,4 @@
 <div class="tabs-container">
-
   <div class="tabs-header">
     <h1 class="tabs-title">TABS</h1>
   </div>
@@ -16,141 +15,109 @@
 
   <div class="tab-content">
 
-    <div *ngIf="activeTabId === 'api1'" class="tab-pane active">
-      <div class="container-fluid p-4 text-center">
-        <h3 class="mb-4">Fotos aleatorias de perros</h3>
-
-        <div class="alert alert-info" *ngIf="loading">
-          Cargando imagen...
-        </div>
-
-        <div *ngIf="!loading && dashboardData.length > 0">
-          <img [src]="dashboardData[0].message" alt="Foto de perro" class="img-fluid rounded shadow-sm mb-3"
-            style="max-width: 400px; border-radius: 10px;">
-          <br>
-          <button class="btn btn-primary" (click)="loadDashboardData()">
-            Cargar otra imagen
-          </button>
-        </div>
+    <div *ngIf="activeTabId === 'api1'" class="tab-pane active text-center">
+      <h3 class="mb-4">Fotos aleatorias de perros</h3>
+      <div class="alert alert-info" *ngIf="loading">Cargando imagen...</div>
+      <div *ngIf="!loading && dashboardData.length > 0">
+        <img [src]="dashboardData[0].message" class="img-fluid rounded shadow-sm mb-3" style="max-width: 400px;">
+        <br>
+        <button class="btn btn-primary" (click)="loadDashboardData()">Cargar otra imagen</button>
       </div>
     </div>
 
-    <div *ngIf="activeTabId === 'api2'" class="tab-pane active">
-      <div class="container-fluid text-center p-4">
-        <h3 class="mb-4">Fotos aleatorias de gatos</h3>
-
-        <div class="alert alert-info" *ngIf="loading">Cargando imagen...</div>
-
-        <div *ngIf="!loading && postsData.length > 0">
-          <img [src]="postsData[0].url" class="img-fluid rounded shadow mb-3" style="max-width: 400px;">
-          <br>
-          <button class="btn btn-primary" (click)="loadPostsData()">Cargar otra imagen</button>
-        </div>
+    <div *ngIf="activeTabId === 'api2'" class="tab-pane active text-center">
+      <h3 class="mb-4">Fotos aleatorias de gatos</h3>
+      <div class="alert alert-info" *ngIf="loading">Cargando imagen...</div>
+      <div *ngIf="!loading && postsData.length > 0">
+        <img [src]="postsData[0].url" class="img-fluid rounded shadow-sm mb-3" style="max-width: 400px;">
+        <br>
+        <button class="btn btn-primary" (click)="loadPostsData()">Cargar otra imagen</button>
       </div>
     </div>
 
     <div *ngIf="activeTabId === 'api3'" class="tab-pane active">
-      <div class="container-fluid p-4">
-        <h3 class="mb-4">Videos/Photos</h3>
-        <div class="alert alert-info" *ngIf="loading">
-          Cargando videos...
-        </div>
-        <div class="row" *ngIf="!loading">
-          <div class="col-md-3 mb-3" *ngFor="let video of videosData">
-            <div class="card">
-              <img [src]="video.thumbnailUrl" class="card-img-top" [alt]="video.title">
-              <div class="card-body">
-                <p class="card-text small">{{ video.title | slice:0:30 }}...</p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <h3 class="mb-4 text-center">Lista de países</h3>
+      <div class="alert alert-info text-center" *ngIf="loading">Cargando lista de países...</div>
+      <div class="table-responsive" *ngIf="!loading && videosData.length > 0">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Bandera</th>
+              <th>Nombre</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let country of videosData">
+              <td><img [src]="country.flag" width="50" height="30"></td>
+              <td>{{ country.name }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
     <div *ngIf="activeTabId === 'api4'" class="tab-pane active">
-      <div class="container-fluid p-4">
-        <h3 class="mb-4">Contacts</h3>
-        <div class="alert alert-info" *ngIf="loading">
-          Cargando contactos...
-        </div>
-        <div class="list-group" *ngIf="!loading">
-          <div class="list-group-item" *ngFor="let contact of contactsData">
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">{{ contact.name }}</h5>
-              <small>{{ contact.email }}</small>
+      <h3 class="mb-4 text-center">Usuarios Aleatorios</h3>
+      <div *ngIf="loading" class="alert alert-info text-center">Cargando usuarios...</div>
+      <div class="row" *ngIf="!loading">
+        <div class="col-md-4 mb-3" *ngFor="let user of contactsData">
+          <div class="card shadow-sm h-100 text-center">
+            <img [src]="user.picture.thumbnail" class="rounded-circle mt-3 mx-auto" width="80" height="80">
+            <div class="card-body">
+              <h6>{{ user.name.first }} {{ user.name.last }}</h6>
+              <p class="text-muted small mb-1">{{ user.email }}</p>
+              <p class="small">{{ user.location.city }}, {{ user.location.country }}</p>
             </div>
-            <p class="mb-1">{{ contact.body }}</p>
           </div>
         </div>
       </div>
     </div>
 
-    <div *ngIf="activeTabId === 'api5'" class="tab-pane active">
-      <div class="container-fluid p-4">
-        <h3 class="mb-4">Weather</h3>
-        <div class="alert alert-warning">
-          Implementar API de clima aquí
-        </div>
+    <div *ngIf="activeTabId === 'api5'" class="tab-pane active text-center">
+      <h3 class="mb-4">Frase aleatoria</h3>
+      <div *ngIf="loading" class="alert alert-info">Cargando frase...</div>
+      <div *ngIf="!loading && weatherData.length > 0" class="card mx-auto p-4 shadow-sm" style="max-width: 500px;">
+        <blockquote class="blockquote mb-0">
+          <p>"{{ weatherData[0].quote }}"</p>
+          <footer class="blockquote-footer mt-2">{{ weatherData[0].author }}</footer>
+        </blockquote>
+        <button class="btn btn-primary mt-3" (click)="loadWeatherData()">Cargar otra frase</button>
       </div>
     </div>
 
     <div *ngIf="activeTabId === 'api6'" class="tab-pane active">
-      <div class="container-fluid p-4">
-        <h3 class="mb-4">News</h3>
-        <div class="alert alert-warning">
-          Implementar API de noticias aquí
+      <h3 class="mb-4 text-center">Planetas del Sistema Solar</h3>
+      <div *ngIf="loading" class="alert alert-info text-center">Cargando planetas...</div>
+      <div class="row" *ngIf="!loading">
+        <div class="col-md-3 mb-3" *ngFor="let planet of newsData">
+          <div class="card shadow-sm h-100 text-center p-3">
+            <h5>{{ planet.name }}</h5>
+            <p class="small text-muted">{{ planet.description }}</p>
+          </div>
         </div>
       </div>
     </div>
 
     <div *ngIf="activeTabId === 'api7'" class="tab-pane active">
-      <div class="container-fluid p-4">
-        <h3 class="mb-4">Users</h3>
-        <div class="alert alert-info" *ngIf="loading">
-          Cargando usuarios...
-        </div>
-        <div class="table-responsive" *ngIf="!loading">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Ciudad</th>
-                <th>Empresa</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let user of usersData">
-                <td>{{ user.id }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.address?.city }}</td>
-                <td>{{ user.company?.name }}</td>
-              </tr>
-            </tbody>
-          </table>
+      <h3 class="mb-4 text-center">Noticias falsas</h3>
+      <div *ngIf="loading" class="alert alert-info text-center">Cargando noticias...</div>
+      <div class="row" *ngIf="!loading">
+        <div class="col-md-4 mb-3" *ngFor="let news of usersData">
+          <div class="card shadow-sm h-100 p-3">
+            <h5>{{ news.title | titlecase }}</h5>
+            <p>{{ news.body }}</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <div *ngIf="activeTabId === 'api8'" class="tab-pane active">
-      <div class="container-fluid p-4">
-        <h3 class="mb-4">Products/Albums</h3>
-        <div class="alert alert-info" *ngIf="loading">
-          Cargando productos...
-        </div>
-        <div class="row" *ngIf="!loading">
-          <div class="col-md-4 mb-3" *ngFor="let product of productsData">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">{{ product.title }}</h5>
-                <p class="text-muted">Album ID: {{ product.id }}</p>
-                <p class="text-muted">User ID: {{ product.userId }}</p>
-              </div>
-            </div>
-          </div>
+    <div *ngIf="activeTabId === 'api8'" class="tab-pane active text-center">
+      <h3 class="mb-4">Chistes aleatorios</h3>
+      <div *ngIf="loading" class="alert alert-info">Cargando chistes...</div>
+      <div *ngIf="!loading">
+        <div class="card mb-3 shadow-sm p-3" *ngFor="let joke of productsData">
+          <p><strong>{{ joke.setup }}</strong></p>
+          <p class="text-muted">{{ joke.punchline }}</p>
         </div>
       </div>
     </div>
