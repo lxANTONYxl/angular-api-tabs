@@ -1,59 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-
-interface Tab {
-  id: string;
-  label: string;
-  active: boolean;
-}
-
-interface DogResponse {
-  message: string;
-  status: string;
-}
-
-export interface RandomUser {
-  name: { first: string; last: string };
-  email: string;
-  location: { city: string; country: string };
-  picture: { thumbnail: string };
-}
-
-export interface Country {
-  name: string;
-  capital: string;
-  region: string;
-  population: number;
-  flag: string;
-}
-
-interface Quote {
-  id: number;
-  quote: string;
-  author: string;
-}
-
-interface Planet {
-  id: string;
-  name: string;
-  description: string;
-  image?: string;
-}
-
-interface FakeNews {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
-
-interface Joke {
-  id: number;
-  type: string;
-  setup: string;
-  punchline: string;
-}
+import { 
+  Tab, 
+  DogResponse, 
+  RandomUser, 
+  Country, 
+  Quote, 
+  Planet, 
+  FakeNews, 
+  Joke 
+} from '../../models/api.model';
 
 @Component({
   selector: 'app-tabs',
