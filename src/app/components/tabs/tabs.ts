@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { ApiService } from '../../services/api.service';
 import { 
   Tab, 
   DogResponse, 
+  CatResponse,
   RandomUser, 
   Country, 
   Quote, 
@@ -20,7 +21,7 @@ import {
   styleUrls: ['./tabs.css']
 })
 export class TabsComponent implements OnInit {
-  constructor(private http: HttpClient) { }
+  constructor(private apiService: ApiService) { }
 
   tabs: Tab[] = [
     { id: 'api1', label: 'Perros', active: true },
@@ -37,7 +38,7 @@ export class TabsComponent implements OnInit {
   loading: boolean = false;
 
   dashboardData: DogResponse[] = [];
-  postsData: any[] = [];
+  postsData: CatResponse[] = [];
   videosData: Country[] = [];
   contactsData: RandomUser[] = [];
   weatherData: Quote[] = [];
@@ -67,8 +68,8 @@ export class TabsComponent implements OnInit {
 
   loadDashboardData(): void {
     this.loading = true;
-    this.http.get<DogResponse>('https://dog.ceo/api/breeds/image/random').subscribe({
-      next: (response) => {
+    this.apiService.getDogImage().subscribe({
+      next: (response: DogResponse) => {
         this.dashboardData = [response];
         this.loading = false;
       },
@@ -81,8 +82,8 @@ export class TabsComponent implements OnInit {
 
   loadPostsData(): void {
     this.loading = true;
-    this.http.get<any[]>('https://api.thecatapi.com/v1/images/search').subscribe({
-      next: (response) => {
+    this.apiService.getCatImage().subscribe({
+      next: (response: CatResponse[]) => {
         this.postsData = response;
         this.loading = false;
       },
@@ -95,10 +96,10 @@ export class TabsComponent implements OnInit {
 
   loadVideosData(): void {
     this.loading = true;
-    this.http.get<any>('https://countriesnow.space/api/v0.1/countries/flag/images').subscribe({
-      next: (res) => {
-        if (res.data) {
-          this.videosData = res.data.slice(0, 20).map((country: any) => ({
+    this.apiService.getCountries().subscribe({
+      next: (response) => {
+        if (response.data) {
+          this.videosData = response.data.slice(0, 20).map((country) => ({
             name: country.name,
             capital: 'N/A',
             region: 'N/A',
@@ -117,9 +118,9 @@ export class TabsComponent implements OnInit {
 
   loadContactsData(): void {
     this.loading = true;
-    this.http.get<{ results: RandomUser[] }>('https://randomuser.me/api/?results=10').subscribe({
-      next: (res) => {
-        this.contactsData = res.results;
+    this.apiService.getRandomUsers().subscribe({
+      next: (response) => {
+        this.contactsData = response.results;
         this.loading = false;
       },
       error: (err) => {
@@ -129,32 +130,25 @@ export class TabsComponent implements OnInit {
     });
   }
 
-  async loadWeatherData() {
+  loadWeatherData(): void {
     this.loading = true;
-    try {
-      const data = await this.http.get<any>('https://dummyjson.com/quotes/random').toPromise();
-      if (data) {
-        this.weatherData = [{
-          id: data.id,
-          quote: data.quote,
-          author: data.author
-        }];
-      } else {
+    this.apiService.getRandomQuote().subscribe({
+      next: (data: Quote) => {
+        this.weatherData = [data];
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar frases:', error);
         this.weatherData = [];
+        this.loading = false;
       }
-    } catch (error) {
-      console.error('Error al cargar frases:', error);
-      this.weatherData = [];
-    } finally {
-      this.loading = false;
-    }
+    });
   }
 
-  async loadNewsData() {
+  loadNewsData(): void {
     this.loading = true;
-    try {
-      const data: any = await this.http.get('https://api.spacexdata.com/v4/launches/latest').toPromise();
-      if (data) {
+    this.apiService.getLatestSpaceXLaunch().subscribe({
+      next: (data) => {
         this.newsData = [
           { id: '1', name: 'Mercurio', description: 'El planeta más cercano al Sol', image: '' },
           { id: '2', name: 'Venus', description: 'El planeta más caliente del sistema solar', image: '' },
@@ -165,48 +159,43 @@ export class TabsComponent implements OnInit {
           { id: '7', name: 'Urano', description: 'El gigante de hielo', image: '' },
           { id: '8', name: 'Neptuno', description: 'El planeta más lejano', image: '' }
         ];
-      } else {
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar planetas:', error);
         this.newsData = [];
+        this.loading = false;
       }
-    } catch (error) {
-      console.error('Error al cargar planetas:', error);
-      this.newsData = [];
-    } finally {
-      this.loading = false;
-    }
+    });
   }
 
-  async loadUsersData(): Promise<void> {
+  loadUsersData(): void {
     this.loading = true;
-    try {
-      const data = await this.http.get<FakeNews[]>('https://jsonplaceholder.typicode.com/posts').toPromise();
-      if (data) {
+    this.apiService.getFakePosts().subscribe({
+      next: (data: FakeNews[]) => {
         this.usersData = data.slice(0, 10);
-      } else {
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar fake news:', error);
         this.usersData = [];
+        this.loading = false;
       }
-    } catch (error) {
-      console.error('Error al cargar fake news:', error);
-      this.usersData = [];
-    } finally {
-      this.loading = false;
-    }
+    });
   }
 
-  async loadProductsData(): Promise<void> {
+  loadProductsData(): void {
     this.loading = true;
-    try {
-      const data = await this.http.get<Joke[]>('https://official-joke-api.appspot.com/random_ten').toPromise();
-      if (data) {
+    this.apiService.getRandomJokes().subscribe({
+      next: (data: Joke[]) => {
         this.productsData = data;
-      } else {
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar chistes:', error);
         this.productsData = [];
+        this.loading = false;
       }
-    } catch (error) {
-      console.error('Error al cargar chistes:', error);
-      this.productsData = [];
-    } finally {
-      this.loading = false;
-    }
+    });
   }
 }
